@@ -8,6 +8,7 @@ export default {
     extend: {
       fontFamily: {
         'zen': ['Zen Dots', 'sans-serif'],
+        'Asul': ['Asul', 'sans-serif'],
       }
     },
   },

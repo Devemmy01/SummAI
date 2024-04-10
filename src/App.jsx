@@ -1,14 +1,19 @@
-import { useState } from 'react'
-import './App.css'
+import Summary from "./components/Summary";
+import Hero from "./components/Hero";
+import "./index.css";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      
-    </>
-  )
+    <main>
+      <div className="main">
+        <div className="gradient" />
+      </div>
+      <div className="app">
+        <Hero />
+        <Summary />
+      </div>
+    </main>
+  );
 }
 
-export default App
+export default App;
