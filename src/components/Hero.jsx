@@ -1,4 +1,4 @@
-import logo from "../assets/logoo.webp";
+import logo from "../assets/logoo.webp"
 const openGithub = useCallback(() => {
   window.open("https://github.com/Devemmy01/SummAI");
 }, []);
