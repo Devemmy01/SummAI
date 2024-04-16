@@ -58,6 +58,10 @@ const Summary = () => {
   };
 
   useEffect(() => {
+    setLanguage(selectedLanguage.value);
+  }, [selectedLanguage]);
+  
+  useEffect(() => {
     const articlesFromLocalStorage = localStorage.getItem("articles");
 
     if (articlesFromLocalStorage) {
@@ -80,7 +84,7 @@ const Summary = () => {
     const { data } = await getSummary({
       url: article.url,
       length: paragraphLength,
-      lang: language,
+      lang: selectedLanguage.value,
     });
 
     if (data?.summary) {
@@ -230,7 +234,7 @@ const Summary = () => {
         )}
 
         <div
-          className={`text-left text-sm mt-2   font-semibold ${
+          className={`text-left text-sm mt-2 font-semibold ${
             isSubmenuOpen ? "" : "hidden"
           }`}
         >
@@ -286,7 +290,7 @@ const Summary = () => {
                 <p className="font-medium text-sm text-slate-100">
                   {getParagraphs(article.summary, paragraphLength)}
                 </p>
-                <div className="flex gap-5 items-end justify-end mt-3 cursor-pointer">
+                <div className="flex gap-4 items-end justify-end mt-3 cursor-pointer">
 
                 <ShareButtons article={article}/>
                 
