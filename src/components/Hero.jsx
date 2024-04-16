@@ -1,7 +1,4 @@
-import logo from "../assets/logoo.webp"
-const openGithub = useCallback(() => {
-  window.open("https://github.com/Devemmy01/SummAI");
-}, []);
+import logo from "../assets/logoo.webp";
 
 const Hero = () => {
   return (
@@ -11,8 +8,7 @@ const Hero = () => {
 
         <i
           className="bx bxl-github text-[50px] md:text-6xl text-white cursor-pointer hover:text-gray-400 transition-colors duration-300 ease-in-out"
-          onClick={openGithub}
-          aria-label="Github link"
+          onClick={() => window.open("https://github.com/Devemmy01/SummAI")}
         ></i>
       </nav>
 
