@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { useLazyGetSummaryQuery } from "../services/article";
 
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import ShareButtons from "./ShareButtons";
+const ShareButtons = lazy(() => import("./ShareButtons"));
 
 const Summary = () => {
-
   const [article, setArticle] = useState({
     url: "",
     summary: "",
@@ -60,7 +59,7 @@ const Summary = () => {
   useEffect(() => {
     setLanguage(selectedLanguage.value);
   }, [selectedLanguage]);
-  
+
   useEffect(() => {
     const articlesFromLocalStorage = localStorage.getItem("articles");
 
@@ -241,7 +240,11 @@ const Summary = () => {
           <div className="flex flex-col gap-1 max-h-60 overflow-y-auto">
             {allArticles.map((item, index) => (
               <div className="link_card" key={`link-${index}`}>
-                <div className="copy_btn" onClick={() => handleCopy(item.url)}>
+                <div
+                  className="copy_btn"
+                  onClick={() => handleCopy(item.url)}
+                  aria-label="Copy URL"
+                >
                   {urlCopied === item.url ? (
                     <i className="bx bx-check text-4xl text-green-500"></i>
                   ) : (
@@ -257,6 +260,7 @@ const Summary = () => {
 
                 <i
                   className="bx bxs-trash-alt text-3xl transition-all text-gray-400 hover:text-red-600"
+                  aria-label="Delete URL"
                   onClick={() => handleDelete(item.url)}
                 ></i>
               </div>
@@ -291,22 +295,24 @@ const Summary = () => {
                   {getParagraphs(article.summary, paragraphLength)}
                 </p>
                 <div className="flex gap-4 items-end justify-end mt-3 cursor-pointer">
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <ShareButtons article={article} />
+                  </Suspense>
 
-                <ShareButtons article={article}/>
-                
-                {summaryCopied === article.summary ? (
-                  <p
-                    onClick={() => handleCopysum(article.summary)}
-                    className="text-green-500 transition-all text-xl"
-                  >
-                    Copied !
-                  </p>
-                ) : (
-                  <i
-                    onClick={() => handleCopysum(article.summary)}
-                    className="bx bxs-copy text-3xl md:text-4xl text-gray-400"
-                  ></i>
-                )}
+                  {summaryCopied === article.summary ? (
+                    <p
+                      onClick={() => handleCopysum(article.summary)}
+                      className="text-green-500 transition-all text-xl"
+                    >
+                      Copied !
+                    </p>
+                  ) : (
+                    <i
+                      onClick={() => handleCopysum(article.summary)}
+                      className="bx bxs-copy text-3xl md:text-4xl text-gray-400"
+                      aria-label="Copy summary"
+                    ></i>
+                  )}
                 </div>
               </div>
             </div>
