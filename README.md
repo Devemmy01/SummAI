@@ -1,4 +1,7 @@
 <div align="center">
+
+  # SummAI
+  <br />
   <br />
       <img src="https://github.com/Devemmy01/SummAI/assets/87545460/f98b0b1d-e3de-4575-9abe-bf0690e89582" alt="Project Banner">
       <img src="https://github.com/Devemmy01/SummAI/assets/87545460/dd656419-99cd-4a2d-984c-bb91dc4c2898" alt="Project Banner">
