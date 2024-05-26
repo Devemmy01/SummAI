@@ -65,7 +65,7 @@ const ShareButtons = ({ article }) => {
         onClick={toggleShareButtons}
       ></i>
       {showShareButtons && (
-        <div className="a flex items-center gap-2">
+        <div className="w-[150px] md:w-[200px] flex items-center gap-2 overflow-scroll pt-2 pb-3 mt-4">
           <button className="b" onClick={shareOnFacebook}>
             <FaFacebook />
           </button>

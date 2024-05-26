@@ -214,11 +214,10 @@ const Summary = () => {
         {allArticles.length > 0 && (
           <div
             onClick={toggleSubmenu}
-            className="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer text-gray-400 w-[230px] hover:bg-[#0db14c6b]"
+            className="p-2.5 mt-3 flex items-center rounded-md px-4 cursor-pointer text-gray-400 w-[230px] "
           >
-            <div className="flex w-full items-center">
-              <i className="bx bx-history text-[20px] md:text-3xl text-gray-400"></i>
-              <span className="text-[18px] md:text-[25px] ml-4 font-semibold">
+            <div className="flex gap-2">
+              <span className="text-[15px] md:text-[20px] ml-4 font-semibold">
                 History
               </span>
               <span
@@ -226,7 +225,7 @@ const Summary = () => {
                   isSubmenuOpen ? "rotate-180" : ""
                 } mx-auto flex items-end justify-end`}
               >
-                <i className="bx bx-chevron-down text-4xl text-gray-400"></i>
+                <i className="bx bx-chevron-down text-2xl text-gray-400"></i>
               </span>
             </div>
           </div>
@@ -246,7 +245,7 @@ const Summary = () => {
                   aria-label="Copy URL"
                 >
                   {urlCopied === item.url ? (
-                    <i className="bx bx-check text-4xl text-green-500"></i>
+                    <i className="bx bx-check text-2xl text-green-500"></i>
                   ) : (
                     <i className="bx bxs-copy text-xl text-gray-400"></i>
                   )}
@@ -259,7 +258,7 @@ const Summary = () => {
                 </p>
 
                 <i
-                  className="bx bxs-trash-alt text-3xl transition-all text-gray-400 hover:text-red-600"
+                  className="bx bxs-trash-alt text-2xl transition-all text-gray-400 hover:text-red-400"
                   aria-label="Delete URL"
                   onClick={() => handleDelete(item.url)}
                 ></i>
@@ -299,20 +298,11 @@ const Summary = () => {
                     <ShareButtons article={article} />
                   </Suspense>
 
-                  {summaryCopied === article.summary ? (
-                    <p
-                      onClick={() => handleCopysum(article.summary)}
-                      className="text-green-500 transition-all text-xl"
-                    >
-                      Copied !
-                    </p>
-                  ) : (
-                    <i
-                      onClick={() => handleCopysum(article.summary)}
-                      className="bx bxs-copy text-3xl md:text-4xl text-gray-400"
-                      aria-label="Copy summary"
-                    ></i>
-                  )}
+                  <i
+                    onClick={() => handleCopysum(article.summary)}
+                    className="bx bxs-copy text-3xl md:text-4xl text-gray-400 hover:text-green-600"
+                    aria-label="Copy summary"
+                  ></i>
                 </div>
               </div>
             </div>
