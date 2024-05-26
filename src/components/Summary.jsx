@@ -257,6 +257,7 @@ const Summary = () => {
                   {item.url}
                 </p>
 
+
                 <i
                   className="bx bxs-trash-alt text-2xl transition-all text-gray-400 hover:text-red-400"
                   aria-label="Delete URL"
