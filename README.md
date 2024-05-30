@@ -1,8 +1,12 @@
-# SummAI
+<div>
+  <img src="https://github.com/Devemmy01/SummAI/assets/87545460/f7067f2f-71e6-4235-b750-208468271b0a" alt="logo" style="width: 300px; height: 80px;">
+</div>
+
+
 <div align="center">
   <br />
       <img src="https://github.com/Devemmy01/SummAI/assets/87545460/f98b0b1d-e3de-4575-9abe-bf0690e89582" alt="Project Banner">
-      <img src="https://github.com/Devemmy01/SummAI/assets/87545460/dd656419-99cd-4a2d-984c-bb91dc4c2898" alt="Project Banner">
+      
   <br />
 
   <h3 align="center">An AI Article Summarizer Web Application</h3>
