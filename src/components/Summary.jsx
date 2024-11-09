@@ -1,8 +1,11 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useLazyGetSummaryQuery } from "../services/article";
-
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../context/AuthContext";
+import { db } from "../config/firebase";
+import { collection, addDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 const ShareButtons = lazy(() => import("./ShareButtons"));
 
@@ -11,54 +14,12 @@ const Summary = () => {
     url: "",
     summary: "",
   });
-
   const [allArticles, setAllArticles] = useState([]);
-  const [urlCopied, setUrlCopied] = useState("");
-  const [summaryCopied, setSummaryCopied] = useState("");
-  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
-
-  const [paragraphLength, setParagraphLength] = useState(3); // Default length of the summary
-
-  const languages = [
-    { value: "en", label: "English" },
-    { value: "es", label: "Spanish" },
-    { value: "fr", label: "French" },
-    { value: "de", label: "German" },
-    { value: "it", label: "Italian" },
-    { value: "pt", label: "Portuguese" },
-    { value: "ar", label: "Arabic" },
-    { value: "zh", label: "Chinese" },
-    { value: "ja", label: "Japanese" },
-    { value: "ko", label: "Korean" },
-    { value: "ru", label: "Russian" },
-    { value: "tr", label: "Turkish" },
-    { value: "vi", label: "Vietnamese" },
-    { value: "hi", label: "Hindi" },
-    { value: "bn", label: "Bengali" },
-    { value: "gu", label: "Gujarati" },
-    { value: "kn", label: "Kannada" },
-    { value: "ml", label: "Malayalam" },
-    { value: "mr", label: "Marathi" },
-    { value: "pa", label: "Punjabi" },
-    { value: "ta", label: "Tamil" },
-    { value: "te", label: "Telugu" },
-    { value: "ur", label: "Urdu" },
-  ];
-
-  const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
-
-  const [language, setLanguage] = useState("en"); // Default language of the summary
+  const [selectedLanguage, setSelectedLanguage] = useState({ value: 'en', label: 'English' });
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
-
-  const toggleSubmenu = () => {
-    setIsSubmenuOpen(!isSubmenuOpen);
-    setArticle({ url: "" });
-  };
-
-  useEffect(() => {
-    setLanguage(selectedLanguage.value);
-  }, [selectedLanguage]);
 
   useEffect(() => {
     const articlesFromLocalStorage = localStorage.getItem("articles");
@@ -77,40 +38,48 @@ const Summary = () => {
     }
   }, []);
 
+  const languages = [
+    { value: "en", label: "English" },
+    { value: "es", label: "Spanish" },
+    { value: "fr", label: "French" },
+    { value: "de", label: "German" },
+    { value: "it", label: "Italian" },
+    { value: "pt", label: "Portuguese" },
+    // ... add more languages as needed
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { data } = await getSummary({
-      url: article.url,
-      length: paragraphLength,
-      lang: selectedLanguage.value,
-    });
+    const { url } = article;
+    if (!url) {
+      toast.error('Please enter a URL');
+      return;
+    }
 
-    if (data?.summary) {
-      const newArticle = { ...article, summary: data.summary };
-
-      const updatedAllArticles = [newArticle, ...allArticles];
-
-      setArticle(newArticle);
-      setAllArticles(updatedAllArticles);
-      // save to local storage
-      localStorage.setItem("articles", JSON.stringify(updatedAllArticles));
+    try {
+      const { data } = await getSummary({ 
+        url,
+        lang: selectedLanguage.value 
+      });
+      
+      if (data?.summary) {
+        const newArticle = { ...article, summary: data.summary };
+        updateArticles(newArticle);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Failed to generate summary. Please try again.");
     }
   };
 
   const handleCopy = (copyUrl) => {
-    setUrlCopied(copyUrl);
     navigator.clipboard.writeText(copyUrl);
-    setTimeout(() => setUrlCopied(false), 4000);
-
     toast.success("Link copied successfully");
   };
 
   const handleCopysum = (copySum) => {
-    setSummaryCopied(copySum);
     navigator.clipboard.writeText(copySum);
-    setTimeout(() => setSummaryCopied(false), 4000);
-
     toast.success("Summary copied successfully");
   };
 
@@ -138,178 +107,139 @@ const Summary = () => {
     return paragraphs.slice(0, length).join("\n");
   };
 
+  const SummarizeButton = ({ isFetching, onClick }) => {
+    return (
+      <button
+        onClick={onClick}
+        disabled={isFetching}
+        className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors disabled:bg-gray-400"
+      >
+        {isFetching ? (
+          <span className="flex items-center space-x-2">
+            <span className="animate-spin">⌛</span>
+          </span>
+        ) : (
+          <>
+            <span className="hidden md:inline">Summarize</span>
+            <span className="md:hidden text-white">✨</span>
+          </>
+        )}
+      </button>
+    );
+  };
+
+  const updateArticles = (newArticle) => {
+    const updatedAllArticles = [newArticle, ...allArticles];
+    setArticle(newArticle);
+    setAllArticles(updatedAllArticles);
+    localStorage.setItem("articles", JSON.stringify(updatedAllArticles));
+  };
+
+  const handleSave = async () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "summaries"), {
+        userId: user.uid,
+        url: article.url,
+        summary: article.summary,
+        timestamp: new Date().toISOString(),
+      });
+      toast.success("Summary saved successfully!");
+    } catch (error) {
+      console.error("Error saving summary:", error);
+      toast.error("Failed to save summary");
+    }
+  };
+
   return (
-    <section className="w-full mt-16 max-w-xl">
-      <ToastContainer />
-      <div className="w-full flex flex-col gap-2">
-        <form
-          className="relative flex gap-3 flex-col justify-center items-center"
-          onSubmit={handleSubmit}
-        >
-          <div className="flex w-full gap-3">
-            <div className="flex flex-col w-full ">
-              <label className="text-gray-400 text-sm font-bold mb-2">
-                Paragraph length
-              </label>
-
-              <input
-                type="number"
-                placeholder="Paragraph length"
-                value={paragraphLength}
-                onChange={(e) => setParagraphLength(e.target.value)}
-                className="block w-full rounded-md border border-gray-200 bg-white py-2.5 pl-2 pr-2 text-sm shadow-lg font-satoshi font-medium focus:border-[#07fd44] focus:outline-none focus:ring-0 peer h-[45px]"
-              />
-            </div>
-
-            <div className="flex flex-col w-full">
-              <label className="text-gray-400 text-sm font-bold mb-2">
-                Language
-              </label>
-
-              <div className="dropdown w-full rounded-md">
-                <button className="dropdown-button h-0">
-                  {selectedLanguage.label}
-                </button>
-                <div className="dropdown-content w-full rounded-md">
-                  {languages.map((language) => (
-                    <div
-                      key={language.value}
-                      onClick={() => setSelectedLanguage(language)}
-                      className="dropdown-item"
-                    >
-                      {language.label}
-                    </div>
-                  ))}
-                </div>
-              </div>
+    <>
+      <section className="w-full max-w-3xl mx-auto">
+        <div className="flex flex-col gap-6">
+          {/* Language Dropdown */}
+          <div className="relative w-full">
+            <select
+              value={selectedLanguage.value}
+              onChange={(e) => setSelectedLanguage(languages.find(lang => lang.value === e.target.value))}
+              className="w-full appearance-none bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-700 dark:text-gray-300 focus:outline-none focus:border-primary-500 cursor-pointer"
+            >
+              {languages.map((lang) => (
+                <option key={lang.value} value={lang.value}>
+                  {lang.label}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
           </div>
 
-          <div className="relative w-full">
-            <i className="bx bx-link-alt text-2xl text-gray-400 absolute left-0 w-3 my-2 ml-3"></i>
-
+          {/* URL Input */}
+          <div className="flex gap-2">
             <input
               type="url"
-              placeholder="Enter a URL "
+              placeholder="Enter article URL..."
               value={article.url}
-              onChange={(e) =>
-                setArticle({
-                  ...article,
-                  url: e.target.value,
-                })
-              }
-              required
-              className="block w-full rounded-md border border-gray-200 bg-white py-2.5 pl-11 pr-12 text-sm shadow-lg font-satoshi font-medium focus:border-[#07fd44] focus:outline-none focus:ring-0 peer"
+              name="article url"
+              onChange={(e) => setArticle({ ...article, url: e.target.value })}
+              className="flex-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2.5 text-gray-700 dark:text-gray-300 focus:outline-none focus:border-primary-500"
             />
-
-            <button
-              type="submit"
-              className="hover:text-[#0cb24c] transition-all absolute inset-y-0 right-0 my-1.5 mr-1.5 flex w-10 items-center justify-center rounded font-sans text-sm font-medium text-gray-400 peer-focus:text-[#0cb24c]"
-            >
-              <i className="bx bxs-send text-3xl"></i>
-            </button>
+            <SummarizeButton isFetching={isFetching} onClick={handleSubmit} />
           </div>
-        </form>
 
-        {allArticles.length > 0 && (
-          <div
-            onClick={toggleSubmenu}
-            className="p-2.5 mt-3 flex items-center rounded-md px-4 cursor-pointer text-gray-400 w-[230px] "
-          >
-            <div className="flex gap-2">
-              <span className="text-[15px] md:text-[20px] ml-4 font-semibold">
-                History
-              </span>
-              <span
-                className={`text-sm ${
-                  isSubmenuOpen ? "rotate-180" : ""
-                } mx-auto flex items-end justify-end`}
-              >
-                <i className="bx bx-chevron-down text-2xl text-gray-400"></i>
-              </span>
-            </div>
-          </div>
-        )}
-
-        <div
-          className={`text-left text-sm mt-2 font-semibold ${
-            isSubmenuOpen ? "" : "hidden"
-          }`}
-        >
-          <div className="flex flex-col gap-1 max-h-60 overflow-y-auto">
-            {allArticles.map((item, index) => (
-              <div className="link_card" key={`link-${index}`}>
-                <div
-                  className="copy_btn"
-                  onClick={() => handleCopy(item.url)}
-                  aria-label="Copy URL"
-                >
-                  {urlCopied === item.url ? (
-                    <i className="bx bx-check text-2xl text-green-500"></i>
-                  ) : (
-                    <i className="bx bxs-copy text-xl text-gray-400"></i>
-                  )}
-                </div>
-                <p
-                  onClick={() => setArticle(item)}
-                  className="flex-1 font-sans text-blue-700 w-full font-medium text-sm truncate"
-                >
-                  {item.url}
-                </p>
-
-                <i
-                  className="bx bxs-trash-alt text-2xl transition-all text-gray-400 hover:text-red-400"
-                  aria-label="Delete URL"
-                  onClick={() => handleDelete(item.url)}
-                ></i>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Display Result */}
-      <div className="my-10 max-w-full flex justify-center items-center">
-        {isFetching ? (
-          <div className="loader"></div>
-        ) : error ? (
-          <div className="flex flex-col gap-3">
-            <p className="font-inter font-bold text-red-500 text-3xl md:text-5xl text-center">
-              Error !
-            </p>
-            <span className="font-satoshi font-semibold text-center text-sm md:text-xl text-red-500">
-              {error?.data?.error}
-            </span>
-          </div>
-        ) : (
-          article.summary && (
+          {/* Display Summary */}
+          {article.summary && (
             <div className="flex flex-col gap-3">
-              <h2 className="font-satoshi font-bold text-slate-100 text-3xl">
-                <span className="bg-gradient-to-r from-[#68d391] via-[#48bb78] to-[#38a169] bg-clip-text text-transparent">
-                  Summary
-                </span>
+              <h2 className="font-bold text-gray-900 dark:text-white text-xl">
+                Article Summary
               </h2>
-              <div className="summary_box relative">
-                <p className="font-medium text-sm text-slate-100">
-                  {getParagraphs(article.summary, paragraphLength)}
-                </p>
-                <div className="flex gap-4 items-end justify-end mt-3 cursor-pointer">
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <ShareButtons article={article} />
-                  </Suspense>
-
-                  <i
-                    onClick={() => handleCopysum(article.summary)}
-                    className="bx bxs-copy text-3xl md:text-4xl text-gray-400 hover:text-green-600"
-                    aria-label="Copy summary"
-                  ></i>
+              <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-md p-6">
+                <div className="flex flex-col">
+                  <div className="text-gray-700 dark:text-gray-300 space-y-4">
+                    {article.summary.split('\n').map((paragraph, index) => (
+                      paragraph && (
+                        <p key={index} className="text-base leading-relaxed">
+                          {paragraph}
+                        </p>
+                      )
+                    ))}
+                  </div>
+                  <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <ShareButtons url={article.url} summary={article.summary} />
+                    </Suspense>
+                    <button
+                      onClick={handleSave}
+                      className="text-primary-500 hover:text-primary-600 pt-4"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          )
-        )}
-      </div>
-    </section>
+          )}
+        </div>
+      </section>
+    </>
   );
 };
 
