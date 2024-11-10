@@ -1,11 +1,11 @@
 <div>
-  <img src="https://github.com/Devemmy01/SummAI/assets/87545460/f7067f2f-71e6-4235-b750-208468271b0a" alt="logo" style="width: 300px; height: 80px;">
+  <img src="https://github.com/user-attachments/assets/3e19446e-22ff-436a-9a1f-6083add0be60" alt="logo" style="width: 300px; height: 80px;">
 </div>
-
 
 <div align="center">
   <br />
-      <img src="https://github.com/Devemmy01/SummAI/assets/87545460/f98b0b1d-e3de-4575-9abe-bf0690e89582" alt="Project Banner">
+      <img src="https://github.com/user-attachments/assets/ad767d90-2613-4ac4-9fc5-9a6349b6fedd" alt="Project Banner">
+
       
   <br />
 
@@ -19,8 +19,11 @@
 ## <a name="tech-stack">⚙️ Tech Stack</a>
 
 - React.js
-- Redux Toolkit
+- Redux
+- Firebase Auth & Firestore database
 - Tailwind CSS
+- Framer motion
+- Rapid API (https://rapidapi.com/restyler/api/article-extractor-and-summarizer)
 
 ## <a name="features">Features</a>
 
@@ -28,19 +31,15 @@
 
 📱 **Summary Generation**: When a user inputs the URL of a long article, the web application uses artificial intelligence (AI) to provide a brief summary of the article's content.
 
-📱 **Custom summarization length**: Allow users to specify the desired length of the summary.
-
-📱 **Summarization language options**: Provide support for summarizing articles in multiple languages.
+📱 **Language options**: Provide support for summarizing articles in multiple languages.
 
 📱 **Share summarized articles**: Allow users to share the summarized articles via social media, or messaging apps.
 
-📱 **History Saving with Local Storage**: Users can save summaries locally using the app's history feature, which makes it easy to keep track and review their reading history.
+📱 **Summary saving**: Users can save summaries which makes it easy to keep track and review their reading history.
 
 📱 **Copy to Clipboard**: Enables users to easily share or store the summarized content by copying it to their clipboard.
 
-📱 **Advanced RTK Query API Requests**: Utilizes the advanced capabilities of Redux Toolkit (RTK) Query for making API requests.
-
-📱 **PWA Feature** The web application is installable on devices
+📱 **Authentication**: Users can sign in and sign out of the application.
 
 
 ## <a name="quick-start"> Quick Start</a>
@@ -85,5 +84,7 @@ Replace the placeholder values with your actual API Key. You can get your api ke
 ```bash
 npm run dev
 ```
+
+Set up your firebase project and replace the firebase config file in this repo with yours
 
 Open [http://localhost:5173](http://localhost:5173) in your browser to view the project.
