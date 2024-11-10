@@ -9,28 +9,59 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
-        clientsClaim: true,
-        skipWaiting: true
+        navigateFallback: '/index.html',
+        navigateFallbackAllowlist: [/^\//, /^\/login/, /^\/home/],
+        navigateFallbackDenylist: [/^\/api/],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // <== 365 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'gstatic-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // <== 365 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          }
+        ]
       },
-      devOptions: {
-        enabled: true
-      },
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: "SummAI",
-        short_name: "SummAI",
-        description:
-          "SummAI is an article summarizer that turns long articles, blog posts, and other text documents into condensed readable summaries, so you can read with less effort.",
-        theme_color: "#141A46",
-        background_color: "#141A46",
+        name: 'Summ.AI',
+        short_name: 'Summ.AI',
+        description: 'AI-powered text summarization tool',
+        theme_color: '#ffffff',
         icons: [
           {
-            src: "/logo.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable",
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
           },
-        ],
-      },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
+      }
     }),
   ],
 });

@@ -1,6 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import SavedSummaries from './SavedSummaries';
 
 const UserNav = () => {
@@ -13,8 +14,10 @@ const UserNav = () => {
       try {
         await logout();
         navigate('/');
+        toast.success('Signed out successfully');
       } catch (error) {
         console.error('Error logging out:', error);
+        toast.error('Failed to sign out');
       }
     } else {
       navigate('/login');
@@ -22,7 +25,7 @@ const UserNav = () => {
   };
 
   const Modal = ({ onClose }) => (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center mt-[30%]">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center h-screen">
       <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto m-4">
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
@@ -70,7 +73,7 @@ const UserNav = () => {
         onClick={handleAuthClick}
         className="px-4 py-2 rounded-lg bg-primary-500 text-white hover:bg-primary-600 transition-colors"
       >
-        {user ? 'Logout' : 'Login'}
+        {user ? 'Sign out' : 'Sign in'}
       </button>
       {showModal && <Modal onClose={() => setShowModal(false)} />}
     </div>

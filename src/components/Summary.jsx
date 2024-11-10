@@ -1,7 +1,6 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useLazyGetSummaryQuery } from "../services/article";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast from 'react-hot-toast';
 import { useAuth } from "../context/AuthContext";
 import { db } from "../config/firebase";
 import { collection, addDoc } from "firebase/firestore";
@@ -73,35 +72,6 @@ const Summary = () => {
     }
   };
 
-  const handleCopy = (copyUrl) => {
-    navigator.clipboard.writeText(copyUrl);
-    toast.success("Link copied successfully");
-  };
-
-  const handleCopysum = (copySum) => {
-    navigator.clipboard.writeText(copySum);
-    toast.success("Summary copied successfully");
-  };
-
-  const handleDelete = (deleteUrl) => {
-    if (window.confirm("Are you sure you want to delete this article?")) {
-      const updatedArticles = allArticles.filter(
-        (item) => item.url !== deleteUrl
-      );
-      setAllArticles(updatedArticles);
-      localStorage.setItem("articles", JSON.stringify(updatedArticles));
-
-      // Check if the currently displayed article is deleted
-      if (article.url === deleteUrl) {
-        // Reset the article state to remove the summary UI
-        setArticle({ url: "" });
-      }
-
-      // Display a toast notification
-      toast.success("Link deleted successfully");
-    }
-  };
-
   const getParagraphs = (summary, length) => {
     const paragraphs = summary.split("\n"); // Assuming that paragraphs are separated by newlines
     return paragraphs.slice(0, length).join("\n");
@@ -153,6 +123,11 @@ const Summary = () => {
       console.error("Error saving summary:", error);
       toast.error("Failed to save summary");
     }
+  };
+
+  const handleCopySummary = () => {
+    navigator.clipboard.writeText(article.summary);
+    toast.success("Summary copied to clipboard");
   };
 
   return (
@@ -213,25 +188,36 @@ const Summary = () => {
                     <Suspense fallback={<div>Loading...</div>}>
                       <ShareButtons url={article.url} summary={article.summary} />
                     </Suspense>
-                    <button
-                      onClick={handleSave}
-                      className="text-primary-500 hover:text-primary-600 pt-4"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                    <div className="flex gap-4">
+                      <button
+                        onClick={handleCopySummary}
+
+                        className="pt-4"
+                        title="Copy summary"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                        />
-                      </svg>
-                    </button>
+                        <i className='bx bx-clipboard text-primary-500 hover:text-primary-600 text-2xl'></i>
+                      </button>
+                      <button
+                        onClick={handleSave}
+                        className="text-primary-500 hover:text-primary-600 pt-4"
+                        title="Save summary"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
