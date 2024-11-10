@@ -74,10 +74,10 @@ npm install
 Create a new file named `.env` in the root of your project and add the following content:
 
 ```env
-VITE_SUM_API_KEY=
+VITE_RAPID_API_KEY=your-api-key-here
 ```
 
-Replace the placeholder values with your actual API Key. You can get your api key by signing up and subcribing to the API for free on the [Rapid API website](https://rapidapi.com/restyler/api/article-extractor-and-summarizer/).
+Replace 'your-api-key-here' with your actual API Key. You can get your api key by signing up and subcribing to the API for free on the [Rapid API website](https://rapidapi.com/restyler/api/article-extractor-and-summarizer/).
 
 **Running the Project**
 
