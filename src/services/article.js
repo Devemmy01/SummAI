@@ -13,9 +13,8 @@ export const articleApi = createApi({
   endpoints: (builder) => ({
     getSummary: builder.query({
       query: (params) => {
-        // Convert number to "X paragraphs" format
-        const lengthParam = `${params.length} paragraphs`;
-        return `summarize?url=${encodeURIComponent(params.url)}&length=${lengthParam}&lang=${params.lang}`;
+        const { url, lang = 'en' } = params;
+        return `summarize?url=${encodeURIComponent(url)}&lang=${lang}`;
       },
     }),
   }),

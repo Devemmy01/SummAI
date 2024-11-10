@@ -1,9 +1,7 @@
 import UserNav from './UserNav';
 import { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
-
-// Add this to your public/index.html in the <head> section:
-// <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+import logo from "../assets/logo.png"
 
 const Layout = ({ children }) => {
   const [darkMode, setDarkMode] = useState(() => {
@@ -35,7 +33,7 @@ const Layout = ({ children }) => {
                 href="/" 
                 className="text-3xl font-bold font-bricolage text-primary-600"
               >
-                SummAI
+                <img src={logo} className='w-[110px] h-[40px]' alt="" />
               </a>
             </div>
             <div className="flex items-center gap-4">

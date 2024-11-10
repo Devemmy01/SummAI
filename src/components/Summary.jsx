@@ -51,24 +51,41 @@ const Summary = () => {
     e.preventDefault();
 
     const { url } = article;
-    if (!url) {
-      toast.error('Please enter a URL');
-      return;
+    
+    // Validate if the input is actually a URL
+    try {
+        new URL(url); // This will throw an error if the URL is invalid
+    } catch (error) {
+        toast.error('Please enter a valid URL');
+        return;
     }
 
     try {
-      const { data } = await getSummary({ 
-        url,
-        lang: selectedLanguage.value 
-      });
-      
-      if (data?.summary) {
-        const newArticle = { ...article, summary: data.summary };
-        updateArticles(newArticle);
-      }
+        const { data, error } = await getSummary({ 
+            url,
+            lang: selectedLanguage.value 
+        });
+        
+        if (error) {
+            if (error.status === 503) {
+                toast.error("Service is temporarily unavailable. Please try again later.");
+            } else {
+                toast.error(error.data?.message || "Failed to generate summary");
+            }
+            return;
+        }
+        
+        if (data?.summary) {
+            const newArticle = { ...article, summary: data.summary };
+            updateArticles(newArticle);
+        }
     } catch (error) {
-      console.error("Error:", error);
-      toast.error("Failed to generate summary. Please try again.");
+        console.error("Error:", error);
+        if (error.status === 503) {
+            toast.error("Service is temporarily unavailable. Please try again later.");
+        } else {
+            toast.error("Failed to generate summary. Please try again.");
+        }
     }
   };
 
