@@ -1,13 +1,4 @@
-<div>
-  <img src="https://github.com/user-attachments/assets/3e19446e-22ff-436a-9a1f-6083add0be60" alt="logo" style="width: 300px; height: 80px;">
-</div>
-
-<div align="center">
-  <br />
-      <img src="https://github.com/user-attachments/assets/ad767d90-2613-4ac4-9fc5-9a6349b6fedd" alt="Project Banner">
-
-      
-  <br />
+## SummAI
 
   <h3 align="center">An AI Article Summarizer Web Application</h3>
 
