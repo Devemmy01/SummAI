@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import { useEffect } from 'react';
 import { getRedirectResult } from 'firebase/auth';
 import { auth } from './config/firebase';
+import { Analytics } from "@vercel/analytics/react"
 
 function App() {
   useEffect(() => {
@@ -25,6 +26,7 @@ function App() {
 
   return (
     <AuthProvider>
+      <Analytics />
       <Toaster 
             position="top-center"
             toastOptions={{

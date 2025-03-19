@@ -1,7 +1,7 @@
 import UserNav from './UserNav';
 import { useState, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
-import logo from "../assets/logo.png"
+import logo from "../assets/sum.png"
 
 const Layout = ({ children }) => {
   const [darkMode, setDarkMode] = useState(() => {
@@ -31,9 +31,10 @@ const Layout = ({ children }) => {
             <div className="flex items-center">
               <a 
                 href="/" 
-                className="text-3xl font-bold font-bricolage text-primary-600"
+                className="text-3xl font-bold font-bricolage flex items-center gap-2 text-primary-600"
               >
-                <img src={logo} className='w-[110px] h-[40px]' alt="" />
+                <img src={logo} className='w-14 md:w-16 h-14 md:h-16' alt="" />
+                <span className='text-xl md:text-2xl font-bold font-bricolage text-primary-600'>SummAI</span>
               </a>
             </div>
             <div className="flex items-center gap-4">
