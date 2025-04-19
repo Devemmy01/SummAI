@@ -17,6 +17,7 @@ const SavedSummaries = () => {
   const [summaries, setSummaries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedSummaries, setExpandedSummaries] = useState({});
+  const [openExportMenu, setOpenExportMenu] = useState(null);
 
   const fetchSummaries = async () => {
     try {
@@ -296,10 +297,11 @@ ${summary.originalText}
             className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow relative"
           >
             <div className="absolute top-2 right-2 flex gap-2">
-              <div className="relative group">
+              <div className="relative">
                 <button
                   className="text-gray-400 hover:text-primary-500 transition-colors flex items-center"
                   title="Export summary"
+                  onClick={() => setOpenExportMenu(summary.id === openExportMenu ? null : summary.id)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -314,34 +316,48 @@ ${summary.originalText}
                     />
                   </svg>
                 </button>
-                <div className="absolute right-0 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg hidden group-hover:block z-10">
-                  <div className="py-1">
-                    <button
-                      onClick={() => handleExport(summary, "txt")}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
-                    >
-                      Export as Text
-                    </button>
-                    <button
-                      onClick={() => handleExport(summary, "html")}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
-                    >
-                      Export as HTML
-                    </button>
-                    <button
-                      onClick={() => handleExport(summary, "md")}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
-                    >
-                      Export as Markdown
-                    </button>
-                    <button
-                      onClick={() => handleExport(summary, "pdf")}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
-                    >
-                      Export as PDF
-                    </button>
+                {openExportMenu === summary.id && (
+                  <div className="absolute right-0 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg z-10">
+                    <div className="py-1">
+                      <button
+                        onClick={() => {
+                          handleExport(summary, "txt");
+                          setOpenExportMenu(null);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                      >
+                        Export as Text
+                      </button>
+                      <button
+                        onClick={() => {
+                          handleExport(summary, "html");
+                          setOpenExportMenu(null);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                      >
+                        Export as HTML
+                      </button>
+                      <button
+                        onClick={() => {
+                          handleExport(summary, "md");
+                          setOpenExportMenu(null);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                      >
+                        Export as Markdown
+                      </button>
+                      <button
+                        onClick={() => {
+                          handleExport(summary, "pdf");
+                          setOpenExportMenu(null);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                      >
+                        Export as PDF
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
               <button
                 onClick={() => handleDelete(summary.id)}
@@ -366,7 +382,7 @@ ${summary.originalText}
               href={summary.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-gray-900 dark:text-white mb-2 hover:text-primary-600 dark:hover:text-primary-400 block pr-16"
+              className="font-medium w-fit text-gray-900 dark:text-white mb-2 hover:text-primary-600 dark:hover:text-primary-400 block pr-16"
             >
               {summary.url || summary.originalText?.slice(0, 50) + "..."}
             </a>
