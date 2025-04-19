@@ -5,3 +5,19 @@
 *{
     scroll-behavior: smooth;
 }
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 128, 0, 0.664);
+    border-radius: 4px;
+}

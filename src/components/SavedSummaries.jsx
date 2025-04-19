@@ -384,7 +384,7 @@ ${summary.originalText}
               rel="noopener noreferrer"
               className="font-medium w-fit text-gray-900 dark:text-white mb-2 hover:text-primary-600 dark:hover:text-primary-400 block pr-16"
             >
-              {summary.url || summary.originalText?.slice(0, 50) + "..."}
+              {summary.url ? `${summary.url.substring(0, 20)}...` : summary.originalText?.slice(0, 50) + "..."}
             </a>
             <div className="text-gray-600 dark:text-gray-300 space-y-2">
               {expandedSummaries[summary.id] ? (

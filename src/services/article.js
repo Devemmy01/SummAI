@@ -14,7 +14,20 @@ export const articleApi = createApi({
     getSummary: builder.query({
       query: (params) => {
         const { url, lang = 'en' } = params;
-        return `summarize?url=${encodeURIComponent(url)}&lang=${lang}`;
+        console.log('Attempting to summarize URL:', url); // Debug log
+        return {
+          url: `summarize?url=${encodeURIComponent(url)}&lang=${lang}`,
+          validateStatus: (response) => {
+            if (response.status === 400) {
+              console.error('Invalid URL or unsupported domain:', url);
+            } else if (response.status === 401) {
+              console.error('API key invalid or expired');
+            } else if (response.status === 403) {
+              console.error('Access forbidden - domain may be blocked');
+            }
+            return response.status < 500;
+          },
+        };
       },
     }),
   }),
