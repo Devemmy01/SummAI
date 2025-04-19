@@ -25,9 +25,9 @@ const Layout = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-gray-900/10 dark:border-gray-50/[0.06] bg-white/75 dark:bg-gray-900/75 supports-backdrop-blur:bg-white/60">
+      <header className="sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 bg-white/75 dark:bg-gray-900/75 supports-backdrop-blur:bg-white/60">
         <div className="max-w-7xl mx-auto">
-          <div className="py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+          <div className="py-2 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <div className="flex items-center">
               <a 
                 href="/" 

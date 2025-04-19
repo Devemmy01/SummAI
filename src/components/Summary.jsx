@@ -29,10 +29,8 @@ const Summary = () => {
         setAllArticles(parsedArticles);
       } catch (error) {
         console.error("Error parsing articles from localStorage:", error);
-        // Handle parsing error (optional: set an empty array or default values)
       }
     } else {
-      // Set an empty array or default values if no articles in localStorage
       setAllArticles([]);
     }
   }, []);
